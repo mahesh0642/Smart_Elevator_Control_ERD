@@ -1,0 +1,94 @@
+buildings [icon: building, color: blue] {
+  building_id string pk
+  name string
+  location string
+}
+
+floors [icon: layers, color: blue] {
+  floor_id string pk
+  building_id string
+  floor_number number
+}
+
+shafts [icon: grid, color: blue] {
+  shaft_id string pk
+  building_id string
+  shaft_number number
+}
+
+elevators [icon: move-vertical, color: blue] {
+  elevator_id string pk
+  shaft_id string
+  capacity number
+  model string
+  installation_date date
+}
+
+elevator_floor_map [icon: link, color: purple] {
+  id string pk
+  elevator_id string
+  floor_id string
+}
+
+requests [icon: bell, color: green] {
+  request_id string pk
+  floor_id string
+  direction string
+  request_time timestamp
+  status string
+}
+
+ride_assignments [icon: target, color: orange] {
+  assignment_id string pk
+  request_id string
+  elevator_id string
+  assigned_time timestamp
+}
+
+ride_logs [icon: activity, color: red] {
+  ride_id string pk
+  elevator_id string
+  request_id string
+  start_floor_id string
+  end_floor_id string
+  start_time timestamp
+  end_time timestamp
+}
+
+elevator_status [icon: signal, color: yellow] {
+  status_id string pk
+  elevator_id string
+  status string
+  updated_at timestamp
+}
+
+maintenance [icon: tool, color: red] {
+  maintenance_id string pk
+  elevator_id string
+  start_date date
+  end_date date
+  issue_description string
+  status string
+}
+
+floors.building_id > buildings.building_id
+shafts.building_id > buildings.building_id
+
+elevators.shaft_id > shafts.shaft_id
+
+elevator_floor_map.elevator_id > elevators.elevator_id
+elevator_floor_map.floor_id > floors.floor_id
+
+requests.floor_id > floors.floor_id
+
+ride_assignments.request_id > requests.request_id
+ride_assignments.elevator_id > elevators.elevator_id
+
+ride_logs.elevator_id > elevators.elevator_id
+ride_logs.request_id > requests.request_id
+ride_logs.start_floor_id > floors.floor_id
+ride_logs.end_floor_id > floors.floor_id
+
+elevator_status.elevator_id > elevators.elevator_id
+
+maintenance.elevator_id > elevators.elevator_id
